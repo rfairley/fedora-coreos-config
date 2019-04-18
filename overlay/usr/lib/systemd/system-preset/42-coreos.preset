@@ -1,6 +1,2 @@
-# Presets here that eventually should live in the generic fedora presets
-enable coreos-growpart.service
-enable console-login-helper-messages-issuegen.service
-enable console-login-helper-messages-motdgen.service
-# This one is from https://github.com/coreos/ignition-dracut
-enable ignition-firstboot-complete.service
+# This file is installed as part of the overlay package and can be used to
+# override presets installed elsewhere in Fedora CoreOS.
