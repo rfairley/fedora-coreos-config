@@ -13,3 +13,5 @@ enable afterburn-sshkeys@.service
 enable boot-efi.mount
 # Update agent
 enable zincati.service
+# Metrics client
+enable fedora-coreos-metrics-client.service

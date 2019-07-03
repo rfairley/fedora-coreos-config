@@ -176,3 +176,5 @@ packages:
   - whois-nls
   # Updates
   - zincati
+  # Metrics
+  - fedora-coreos-metrics-client
