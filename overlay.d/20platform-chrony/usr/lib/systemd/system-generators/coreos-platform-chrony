@@ -21,10 +21,25 @@ confpath=/run/coreos-platform-chrony.conf
 # Yeah this isn't a completely accurate kernel argument parser but
 # we don't have one shared across shell services at the moment.
 platform="$(grep -Eo ' ignition.platform.id=[a-z]+' /proc/cmdline | cut -f 2 -d =)"
-case "${platform}" in
-    azure|aws|gcp) ;;  # OK, this is a platform we know how to support
-    *) exit 0 ;;
-esac
+# case "${platform}" in
+#     azure|aws|gcp) ;;  # OK, this is a platform we know how to support
+#     *) exit 0 ;;
+# esac
+
+# If not set already (by host customization or this script), set
+# PEERNTP=no so that DHCP-provided NTP servers are not added to chrony.
+# By doing this we assume the better NTP server choice is the
+# platform-provided link-local NTP server rather than others from DHCP.
+# TODO: once https://bugzilla.redhat.com/show_bug.cgi?id=1828434 is
+# resolved, this won't be required.
+if [ ! -e /etc/sysconfig/network ] || ! grep "PEERNTP" /etc/sysconfig/network; then
+    cat <<EOF >> /etc/sysconfig/network
+# PEERNTP=no is automatically added by default when a platform-provided time
+# source is available, but this behavior may be overridden through an Ignition
+# config specifying PEERNTP=yes. See https://github.com/coreos/fedora-coreos-config/pull/412.
+PEERNTP=no
+EOF
+fi
 
 if ! cmp {/usr,}/etc/chrony.conf >/dev/null; then
     echo "$self: /etc/chrony.conf is modified; not changing the default"
